@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import pygame
 import random
 import time
@@ -165,3 +166,172 @@ while True:
     clock.tick(60)
 
 pygame.quit()
+=======
+import pygame
+import random
+import time
+import os
+
+pygame.init()
+
+# Função para limpar o terminal
+def limpar_terminal():
+    if os.name == "nt":  # Windows
+        os.system("cls")
+    else:  # Mac ou Linux
+        os.system("clear")
+
+# Limpar o terminal antes de iniciar o jogo
+limpar_terminal()
+
+# Configuração da tela
+tamanho = (1000, 592)
+clock = pygame.time.Clock()
+tela = pygame.display.set_mode(tamanho)
+
+# Ícone e título
+icone = pygame.image.load("Recursos/carro1.png")
+pygame.display.set_icon(icone)
+pygame.display.set_caption("Corrida Maluca")
+
+# Cores
+branco = (255, 255, 255)
+preto = (0, 0, 0)
+azul_claro = (173, 216, 230)
+
+# Recursos
+fundo = pygame.image.load("Recursos/fundo.png")
+carro1 = pygame.image.load("Recursos/carro1.png")
+carro2 = pygame.image.load("Recursos/carro2.png")
+carro3 = pygame.image.load("Recursos/carro3.png")
+pele = pygame.image.load("Recursos/pele.png")
+podio_vermelho = pygame.image.load("Recursos/podio.png")  # Pódio para o vermelho
+podio_amarelo = pygame.image.load("Recursos/podio2.png")  # Pódio para o amarelo
+podio_azul = pygame.image.load("Recursos/podio3.png")  # Pódio para o azul
+capa = pygame.image.load("Recursos/capa.png")  # Imagem da capa
+vitoria = pygame.mixer.Sound("Recursos/vitoria.mp3")
+vitoria.set_volume(0.5)
+
+# Inicialização de variáveis
+movXCar1, movXCar2, movXCar3 = 0, 0, 0  # Posições horizontais iniciais
+posYCar1, posYCar2, posYCar3 = 90, 150, 210  # Superior
+acabou = False
+somDaVitoria = False
+
+# Fontes para textos
+fonte = pygame.font.Font("freesansbold.ttf", 20)
+fonte_vencedor = pygame.font.Font("freesansbold.ttf", 50)  # Letra maior e mais estilizada
+
+# Nomes dos pilotos
+pilotos = {
+    "Vermelho": "Júlio Salles",
+    "Amarelo": "Marcão",
+    "Azul": "Posser"
+}
+
+# Variável para armazenar o vencedor
+vencedor = ""
+
+# Exibir a capa por 3 segundos (ajustada ao tamanho da tela)
+tela.fill(preto)
+tela.blit(pygame.transform.scale(capa, tamanho), (0, 0))
+pygame.display.update()
+time.sleep(3)
+
+# Exibir tela preta por 2 segundos
+tela.fill(preto)
+pygame.display.update()
+time.sleep(2)
+
+# Iniciar o áudio de fundo no início da corrida
+pygame.mixer.music.load("Recursos/trilha.mp3")
+pygame.mixer.music.play(-1)  # Looping infinito
+
+while True:
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            quit()
+
+    # Atualizar a tela
+    tela.fill(branco)
+    tela.blit(fundo, (0, 0))
+    tela.blit(carro1, (movXCar1, posYCar1))
+    tela.blit(carro2, (movXCar2, posYCar2))
+    tela.blit(carro3, (movXCar3, posYCar3))
+
+    # Exibir os nomes dos pilotos
+    tela.blit(fonte.render("Júlio Salles", True, preto), (movXCar1 + 10, posYCar1 - 20))
+    tela.blit(fonte.render("Marcão", True, preto), (movXCar2 + 10, posYCar2 - 20))
+    tela.blit(fonte.render("Posser", True, preto), (movXCar3 + 10, posYCar3 - 20))
+
+    if not acabou:
+        # Movimentação dos carros na pista superior
+        movXCar1 += random.randint(5, 10)
+        movXCar2 += random.randint(5, 10)
+        movXCar3 += random.randint(5, 10)
+
+        # Transição para a pista inferior ao cruzar a linha superior
+        if movXCar1 > 1000 and posYCar1 == 90:
+            movXCar1 = 0
+            posYCar1 = 370  # Alinhar na pista inferior
+        if movXCar2 > 1000 and posYCar2 == 150:
+            movXCar2 = 0
+            posYCar2 = 430  # Alinhar na pista inferior
+        if movXCar3 > 1000 and posYCar3 == 210:
+            movXCar3 = 0
+            posYCar3 = 490  # Alinhar na pista inferior
+
+        # Determinar liderança e distâncias
+        posicoes = [(movXCar1, "Vermelho"), (movXCar2, "Amarelo"), (movXCar3, "Azul")]
+        posicoes.sort(reverse=True, key=lambda x: x[0])  # Ordenar pela posição
+        lider, segundo, terceiro = posicoes
+        vencedor = lider[1]  # Armazena o vencedor para o pódio
+
+        # Painel de informações no canto
+        pygame.draw.rect(tela, azul_claro, (750, 10, 240, 100))
+        pygame.draw.rect(tela, preto, (750, 10, 240, 100), 2)  # Borda do painel
+        texto_lider = fonte.render(f"Líder: {lider[1]}", True, preto)
+        texto_dist1 = fonte.render(f"1º-2º: {lider[0] - segundo[0]}", True, preto)
+        texto_dist2 = fonte.render(f"2º-3º: {segundo[0] - terceiro[0]}", True, preto)
+        tela.blit(texto_lider, (760, 20))
+        tela.blit(texto_dist1, (760, 50))
+        tela.blit(texto_dist2, (760, 80))
+
+        # Condição de finalização na pista inferior
+        if movXCar1 > 1000 and posYCar1 == 370:
+            acabou = True
+        if movXCar2 > 1000 and posYCar2 == 430:
+            acabou = True
+        if movXCar3 > 1000 and posYCar3 == 490:
+            acabou = True
+
+    else:
+        # Exibir pele.png antes do pódio
+        pygame.mixer.music.stop()
+        if not somDaVitoria:
+            tela.fill(branco)
+            tela.blit(pygame.transform.scale(pele, tamanho), (0, 0))  # Garantindo tamanho correto
+            pygame.display.update()
+            time.sleep(4)
+            pygame.mixer.Sound.play(vitoria)
+            somDaVitoria = True
+
+        # Exibir o pódio correspondente
+        tela.fill(branco)
+        if vencedor == "Vermelho":
+            tela.blit(pygame.transform.scale(podio_vermelho, tamanho), (0, 0))
+        elif vencedor == "Amarelo":
+            tela.blit(pygame.transform.scale(podio_amarelo, tamanho), (0, 0))
+        elif vencedor == "Azul":
+            tela.blit(pygame.transform.scale(podio_azul, tamanho), (0, 0))
+
+        # Mostrar o nome do vencedor no canto superior esquerdo
+        texto_vencedor = fonte.render(f"Vencedor: {pilotos[vencedor]}", True, preto)
+        tela.blit(texto_vencedor, (20, 20))
+
+    # Atualizar a tela
+    pygame.display.update()
+    clock.tick(60)
+
+pygame.quit()
+>>>>>>> 71b6ac2234e1fea55d6a98e3eb7398ffad031336
