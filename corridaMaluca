@@ -78,15 +78,6 @@ time.sleep(2)
 pygame.mixer.music.load("Recursos/trilha.mp3")
 pygame.mixer.music.play(-1)  # Looping infinito
 
-# Comentários de GitHub no código:
-# 1. Repositório GitHub: https://github.com/JulioSalless/Corrida-Maluca
-# 2. Para enviar o código para o GitHub, siga os passos abaixo:
-#    a. Inicialize o repositório com "git init"
-#    b. Adicione os arquivos com "git add ."
-#    c. Faça o commit com "git commit -m 'Primeiro commit do jogo Corrida Maluca'"
-#    d. Adicione o repositório remoto com "git remote add origin https://github.com/JulioSalless/Corrida-Maluca.git"
-#    e. Envie os arquivos para o GitHub com "git push -u origin main"
-
 while True:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -174,11 +165,3 @@ while True:
     clock.tick(60)
 
 pygame.quit()
-
-echo "# Corrida-Maluca" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/JulioSalless/Corrida-Maluca.git
-git push -u origin main
